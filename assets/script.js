@@ -38,7 +38,26 @@ function searchBtnRun(coordsSource) {
             return response.json();
         }).then(function (data) {
             console.log(data);
-            
+
+            searchHistoryList.append(`<button type="button" class="btn btn-secondary search-history-btn my-2" id="`+ searchBtnText.val() + `">`+ searchBtnText.val() + `</button>`)
+
+            var icon = "http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png"
+            console.log(icon);
+
+            var cityNameIcon = $("#city-name-icon")
+            cityNameIcon.attr("src", icon)
+
+            var newCityName = city + " (" + date + ")"
+
+            cityNameEl.text(newCityName);
+
+            var newTodayTemp = math.floor(data.current.temp)
+            console.log(newTodayTemp);
+
+            todayTempEl.text("Temp: " + newTodayTemp + " °F")
+
+            var newTodayWind = data.current.wind_speed
+            console.log(newTodayWind);
         })
     })
 }
