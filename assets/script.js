@@ -1,0 +1,15 @@
+var h5El = $("h5")
+var searchHistoryBtnEl = $("search-history-btn")
+var searchBtnEl = $("search-btn")
+var todayUVEl = $("#today-uv")
+var todayUVBadgeEl = $("#today-uv-badge")
+var date = moment().format('L')
+var cityNameEl = $("#city-name")
+var todayTempEl = $("#today-temp")
+var todayWindEl = $("#today-wind")
+var todayHumidty = $("#today-humidity")
+var searchHistoryList = $("#search-history-list")
+var searchBtnText = $("#text-box")
+
+searchBtnEl.on("click", searchBtnRun);
+$("search-history-list").on("click", ".search-history-btn", historyBtnRun)
