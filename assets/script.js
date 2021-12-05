@@ -1,20 +1,20 @@
-var h5El = $("h5")
+var searchBtnEl = $("#search-btn");
 var searchHistoryBtnEl = $("search-history-btn")
-var searchBtnEl = $("search-btn")
-var todayUVEl = $("#today-uv")
-var todayUVBadgeEl = $("#today-uv-badge")
-var date = moment().format('L')
+var date = moment().format('L');
 var cityNameEl = $("#city-name")
 var todayTempEl = $("#today-temp")
 var todayWindEl = $("#today-wind")
-var todayHumidty = $("#today-humidity")
+var todayHumidity = $("#today-humidity")
+var todayUVEl = $("#today-uv")
+var todayUVBadgeEl = $("#today-uv-badge")
+var h5El = $("h5")
 var searchHistoryList = $("#search-history-list")
-var searchBtnText = $("#text-box")
-
+var searchBtnText = $("#text-box");
 searchBtnEl.on("click", searchBtnRun);
 $("search-history-list").on("click", ".search-history-btn", historyBtnRun)
 
-// retrieving information from the API
+
+
 function searchBtnRun(coordsSource) {
     var city = searchBtnText.val();
     var APIKey = "eef440075f231dabd98329edc16d0dae";
@@ -22,42 +22,119 @@ function searchBtnRun(coordsSource) {
     console.log(city);
     var coordsSource = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIKey;
 
-    // fetching locational information
-    fetch(coordsSource).then(function (response) {
+
+    fetch(coordsSource)
+        .then(function (response) {
         return response.json();
-    }).then(function (data) {
-        var latitude = data.coord.latitude
-        console.log(latitude);
+        })
+        .then(function (data) {
 
-        var longitude = data.coord.longitude
-        console.log(longitude);
+        var lat = data.coord.lat
+        console.log(lat);
+        var lon = data.coord.lon
+        console.log(lon);
 
-        var finalAPI = "https://api.openweathermap.org/data/2.5/onecall?lat="+ latitude + "&lon=" + longitude + "&units=imperial&appid=" + APIKey
+        var finalAPI = "https://api.openweathermap.org/data/2.5/onecall?lat="+ lat + "&lon=" + lon + "&units=imperial&appid=" + APIKey
 
-        fetch(finalAPI).then(function (response) {
+        fetch(finalAPI)
+            .then(function (response) {
             return response.json();
-        }).then(function (data) {
+            })
+            .then(function (data) {
             console.log(data);
 
-            searchHistoryList.append(`<button type="button" class="btn btn-secondary search-history-btn my-2" id="`+ searchBtnText.val() + `">`+ searchBtnText.val() + `</button>`)
+        searchHistoryList.append(`<button type="button" class="btn btn-secondary search-history-btn my-2" id="`+ searchBtnText.val() + `">`+ searchBtnText.val() + `</button>`)    
 
+    
             var icon = "http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png"
             console.log(icon);
-
-            var cityNameIcon = $("#city-name-icon")
-            cityNameIcon.attr("src", icon)
-
-            var newCityName = city + " (" + date + ")"
-
-            cityNameEl.text(newCityName);
-
-            var newTodayTemp = math.floor(data.current.temp)
+   
+            var cityNameIconEl = $("#city-name-icon")
+   
+            cityNameIconEl.attr("src", icon)
+   
+            var newCityName = city + "  (" + date + ")"
+    
+            cityNameEl.text(newCityName)
+    
+            var newTodayTemp = Math.floor(data.current.temp)
             console.log(newTodayTemp);
 
             todayTempEl.text("Temp: " + newTodayTemp + " °F")
-
+    
             var newTodayWind = data.current.wind_speed
             console.log(newTodayWind);
-        })
-    })
+    
+            todayWindEl.text("Wind: " + newTodayWind + " MPH")
+    
+            var newTodayHumidity = data.current.humidity
+            console.log(newTodayHumidity);
+    
+            todayHumidity.text("Humidity: " + newTodayHumidity + "%")
+    
+            var newTodayUV = data.current.uvi
+    
+            todayUVEl.text("UV Index: " + newTodayUV)
+            
+    for (i=0; i < h5El.length ; i++) {
+   
+        var daysToAdd = 1 + i
+    
+        var newForecastDay = moment().add(daysToAdd, "days").format("L")
+    
+        $(h5El[i]).text(newForecastDay);
+
+    
+        var forecastIconEl = $(".emoji")
+        console.log(forecastIconEl);
+    
+        var forecastIconApi = data.daily[i].weather[0].icon
+        console.log(forecastIconApi);
+    
+        var newForecastIcon = "http://openweathermap.org/img/wn/" + forecastIconApi + "@2x.png"
+        console.log(newForecastIcon);
+    
+        $(forecastIconEl[i]).attr("src", newForecastIcon)
+
+    
+        var forecastTempEl = $(".temp")
+        console.log(forecastTempEl)
+    
+        var forecastTempApi = data.daily[i].temp.day
+        console.log(forecastTempApi);
+    
+        var newForecastTemp = "Temp: " + forecastTempApi + " °F"
+        console.log(newForecastTemp);
+    
+        $(forecastTempEl[i]).text(newForecastTemp)
+
+    
+        var forecastWindEl = $(".wind")
+        console.log(forecastWindEl)
+    
+        var forecastWindApi = data.daily[i].wind_speed
+        console.log(forecastWindApi);
+    
+        var newForecastWind = "Wind: " + forecastWindApi + " MPH"
+        console.log(newForecastWind);
+    
+        $(forecastWindEl[i]).text(newForecastWind)
+
+    
+      var forecastHumidityEl = $(".humidity")
+      console.log(forecastHumidityEl)
+    
+      var forecastHumidityApi = data.daily[i].humidity
+      console.log(forecastHumidityApi);
+    
+      var newForecastHumidity = "Humidity: " + forecastHumidityApi + "%"
+      console.log(newForecastHumidity);
+    
+      $(forecastHumidityEl[i]).text(newForecastHumidity)
+    }
+    
+    searchBtnText.val("")
+})
+});   
+    
 }
